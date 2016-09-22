@@ -241,12 +241,18 @@ if executable('ag')
   let g:ctrlp_use_caching = 0
 endif
 
-" bind K to grep word under cursor
-nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
+" --------------------------------------
+" ack.vim
+" --------------------------------------
 
-" bind \ (backward slash) to grep shortcut
-command! -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
-nnoremap \ :Ag<SPACE>
+if executable('ag')
+  let g:ackprg = 'ag --column'
+endif
+
+nnoremap \ :Ack<SPACE>
+
+" bind K to search word under cursor
+nnoremap K :Ack <cword><cr>
 
 " --------------------------------------
 " vim-plug
@@ -309,6 +315,9 @@ Plug 'groenewege/vim-less'
 
 " mustache/handlebars syntax highlighting
 Plug 'mustache/vim-mustache-handlebars'
+
+" Run your favorite search tool from Vim, with an enhanced results list.
+Plug 'mileszs/ack.vim'
 
 call plug#end()
 
