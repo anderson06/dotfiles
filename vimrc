@@ -3,7 +3,6 @@ set t_Co=256
 
 " color scheme
 syntax on
-color dracula
 
 " Hightlight current line and column
 set cursorline
