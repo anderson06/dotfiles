@@ -1,8 +1,79 @@
+" --------------------------------------
+" vim-plug
+" --------------------------------------
+
+" lista de plugins
+call plug#begin('~/.vim/plugged')
+
+" syntax highlighting melhorada para javascript
+Plug 'pangloss/vim-javascript'
+
+" syntax highligting jsx
+Plug 'mxw/vim-jsx'
+
+" navegar pela estrutura de arquivos
+Plug 'scrooloose/nerdtree'
+
+" carregar automaticamente configurações do editorconfig
+Plug 'editorconfig/editorconfig-vim'
+
+" syntax highlighting para o jade
+Plug 'digitaltoad/vim-pug'
+
+" para trabalhar com arquivos markdown
+Plug 'tpope/vim-markdown'
+
+" allows us to comment/uncomment lines and content
+Plug 'tpope/vim-commentary'
+
+" highlighting para identação
+Plug 'nathanaelkane/vim-indent-guides'
+
+" fuzy file finder
+Plug 'kien/ctrlp.vim'
+
+" quoting/parenthesizing made simple
+Plug 'tpope/vim-surround'
+
+" insert or delete brackets, parens, quotes in pair
+Plug 'jiangmiao/auto-pairs'
+
+" handy mappings
+Plug 'tpope/vim-unimpaired'
+
+" enable repeating supported plugin maps with '.'
+Plug 'tpope/vim-repeat'
+
+" status/tabline
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
+" manage buffer
+Plug 'jeetsukumaran/vim-buffergator'
+
+" tmux/vim navigation
+Plug 'christoomey/vim-tmux-navigator'
+
+" less syntax highlighting
+Plug 'groenewege/vim-less'
+
+" mustache/handlebars syntax highlighting
+Plug 'mustache/vim-mustache-handlebars'
+
+" Run your favorite search tool from Vim, with an enhanced results list.
+Plug 'mileszs/ack.vim'
+
+" Colors
+Plug 'dracula/vim'
+
+call plug#end()
+
 " Use 256 colours
 set t_Co=256
 
 " color scheme
 syntax on
+colorscheme dracula
 
 " Hightlight current line and column
 set cursorline
@@ -27,7 +98,7 @@ if !exists(":DiffOrig")
 endif
 
 " usa o clipboard do sistema para copiar e colar no vim
-set clipboard=unnamedplus
+set clipboard=unnamed
 
 " habilita syntax highlighting do jsx dentro de arquivos js
 let g:jsx_ext_required = 0
@@ -252,71 +323,4 @@ nnoremap \ :Ack<SPACE>
 
 " bind K to search word under cursor
 nnoremap K :Ack <cword><cr>
-
-" --------------------------------------
-" vim-plug
-" --------------------------------------
-
-" lista de plugins
-call plug#begin('~/.vim/plugged')
-
-" syntax highlighting melhorada para javascript
-Plug 'pangloss/vim-javascript'
-
-" syntax highligting jsx
-Plug 'mxw/vim-jsx'
-
-" navegar pela estrutura de arquivos
-Plug 'scrooloose/nerdtree'
-
-" carregar automaticamente configurações do editorconfig
-Plug 'editorconfig/editorconfig-vim'
-
-" syntax highlighting para o jade
-Plug 'digitaltoad/vim-pug'
-
-" para trabalhar com arquivos markdown
-Plug 'tpope/vim-markdown'
-
-" allows us to comment/uncomment lines and content
-Plug 'tpope/vim-commentary'
-
-" highlighting para identação
-Plug 'nathanaelkane/vim-indent-guides'
-
-" fuzy file finder
-Plug 'kien/ctrlp.vim'
-
-" quoting/parenthesizing made simple
-Plug 'tpope/vim-surround'
-
-" insert or delete brackets, parens, quotes in pair
-Plug 'jiangmiao/auto-pairs'
-
-" handy mappings
-Plug 'tpope/vim-unimpaired'
-
-" enable repeating supported plugin maps with '.'
-Plug 'tpope/vim-repeat'
-
-" status/tabline
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-
-" manage buffer
-Plug 'jeetsukumaran/vim-buffergator'
-
-" tmux/vim navigation
-Plug 'christoomey/vim-tmux-navigator'
-
-" less syntax highlighting
-Plug 'groenewege/vim-less'
-
-" mustache/handlebars syntax highlighting
-Plug 'mustache/vim-mustache-handlebars'
-
-" Run your favorite search tool from Vim, with an enhanced results list.
-Plug 'mileszs/ack.vim'
-
-call plug#end()
 
