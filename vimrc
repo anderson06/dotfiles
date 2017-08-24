@@ -66,6 +66,9 @@ Plug 'mileszs/ack.vim'
 " Colors
 Plug 'dracula/vim'
 
+" Git magic
+Plug 'tpope/vim-fugitive'
+
 call plug#end()
 
 " Use 256 colours
