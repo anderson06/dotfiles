@@ -137,9 +137,8 @@ set nobackup
 " sem backup de escrita
 set nowritebackup
 
-" swapfiles
-set swapfile
-set dir=~/tmp
+" disable swapfiles
+set noswapfile
 
 " histórico de comandos
 set history=100
