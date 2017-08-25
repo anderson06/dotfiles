@@ -22,3 +22,6 @@ sudo apt-get install zsh tmux vim-gnome
 wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh
 chsh -s `which zsh`
 
+# install powerline fonts
+# https://gist.github.com/petercossey/69ff13fe366beec4b1df7f42f5fb4faf
+
