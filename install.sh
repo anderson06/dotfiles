@@ -15,7 +15,7 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.c
 # update
 sudo apt-get update
 
-# install favorite console apps
+# install favorite terminal apps
 sudo apt-get install zsh tmux vim-gnome
 
 # install oh-my-zsh
