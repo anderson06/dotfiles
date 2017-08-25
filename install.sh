@@ -11,3 +11,14 @@ ln -sv $DOTFILES_DIR/vimrc ~/.vimrc
 
 # install vim plugin manager
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+# update
+sudo apt-get update
+
+# install favorite console apps
+sudo apt-get install zsh tmux
+
+# install oh-my-zsh
+wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh
+chsh -s `which zsh`
+
