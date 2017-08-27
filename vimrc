@@ -335,3 +335,9 @@ nnoremap \ :Ack<SPACE>
 " bind K to search word under cursor
 nnoremap K :Ack <cword><cr>
 
+" --------------------------------------
+" devfonts
+" --------------------------------------
+
+" These are the basic settings to get the font to work (required):
+set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Nerd\ Font\ Complete\ 12
