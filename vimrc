@@ -75,6 +75,9 @@ Plug 'tpope/vim-sleuth'
 " Add nice icons to nerd tree and other apps
 Plug 'ryanoasis/vim-devicons'
 
+" Tern - awesome js tools
+Plug 'ternjs/tern_for_vim'
+
 call plug#end()
 
 " Use 256 colours
