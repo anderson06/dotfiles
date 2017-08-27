@@ -69,6 +69,9 @@ Plug 'dracula/vim'
 " Git magic
 Plug 'tpope/vim-fugitive'
 
+" Better handling of tabs
+Plug 'tpope/vim-sleuth'
+
 call plug#end()
 
 " Use 256 colours
