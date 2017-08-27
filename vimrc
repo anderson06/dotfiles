@@ -72,6 +72,9 @@ Plug 'tpope/vim-fugitive'
 " Better handling of tabs
 Plug 'tpope/vim-sleuth'
 
+" Add nice icons to nerd tree and other apps
+Plug 'ryanoasis/vim-devicons'
+
 call plug#end()
 
 " Use 256 colours
