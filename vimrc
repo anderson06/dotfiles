@@ -66,6 +66,9 @@ Plug 'mileszs/ack.vim'
 " Colors
 Plug 'dracula/vim'
 
+" Git magic
+Plug 'tpope/vim-fugitive'
+
 call plug#end()
 
 " Use 256 colours
@@ -137,9 +140,8 @@ set nobackup
 " sem backup de escrita
 set nowritebackup
 
-" swapfiles
-set swapfile
-set dir=~/tmp
+" disable swapfiles
+set noswapfile
 
 " histórico de comandos
 set history=100
