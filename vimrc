@@ -94,7 +94,7 @@ set mouse=a
 " Only define it when not defined already.
 if !exists(":DiffOrig")
   command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
-		  \ | wincmd p | diffthis
+    \ | wincmd p | diffthis
 endif
 
 " usa o clipboard do sistema para copiar e colar no vim
@@ -119,8 +119,11 @@ nmap <leader>ne :NERDTreeToggle<cr>
 " Mapeia o esc do modo de inserção para jj
 imap jj <Esc>
 
-" Espaço + char para adicionar apenas um caracter no modo normal
-nnoremap <Space> i_<Esc>r
+" copy and paste
+vmap <C-c> "+yi
+vmap <C-x> "+c
+vmap <C-v> c<ESC>"+p
+imap <C-v> <ESC>"+pa
 
 " habilita a sintaxe colorida quando o terminal pode exibir cores
 syntax on
