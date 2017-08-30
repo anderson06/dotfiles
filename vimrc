@@ -76,10 +76,13 @@ Plug 'tpope/vim-sleuth'
 Plug 'ryanoasis/vim-devicons'
 
 " Tern - awesome js tools
-Plug 'ternjs/tern_for_vim'
+Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }
 
 " autocomplete
 Plug 'Valloric/YouCompleteMe', { 'do': './install.py --tern-completer' }
+
+" syntatic checker
+Plug 'vim-syntastic/syntastic'
 
 call plug#end()
 
@@ -347,3 +350,19 @@ nnoremap K :Ack <cword><cr>
 
 " These are the basic settings to get the font to work (required):
 set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Nerd\ Font\ Complete\ 12
+
+" --------------------------------------
+" syntastic
+" --------------------------------------
+
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+" Custom Settings
+
+let g:syntastic_javascript_checkers = ['eslint']
+let g:syntastic_error_symbol = '❌'
+let g:syntastic_warning_symbol = '⚠️'

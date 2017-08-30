@@ -23,6 +23,7 @@ sudo bash install.sh
 
 * programming languages installation
   * node
+    * eslint
   * ruby
   * ruby
 * feedback info while installing
