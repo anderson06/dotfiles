@@ -1,26 +1,32 @@
+# install favorite terminal apps
+sudo apt-get update
+sudo apt-get install zsh tmux vim-gnome silversearcher-ag dconf-cli build-essential cmake python-dev python3-dev
+
 # clean
 rm -fr ~/.gitconfig
 rm -fr ~/.tmux.conf
 rm -fr ~/.vimrc
+rm -fr ~/.tern-config
 
 # link
 DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ln -sv $DOTFILES_DIR/gitconfig ~/.gitconfig
 ln -sv $DOTFILES_DIR/tmux.conf ~/.tmux.conf
 ln -sv $DOTFILES_DIR/vimrc ~/.vimrc
+ln -sv $DOTFILES_DIR/tern-config ~/.tern-config
 
-# install nerd fonts
+# install vim-icons fonts
 mkdir -p ~/.local/share/fonts
 cd ~/.local/share/fonts && curl -fLo "Droid Sans Mono for Powerline Nerd Font Complete.otf" https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf
 
-# install anonymous pro fonts
+# install vim-airline plugin required font
 mkdir -p ~/.fonts
 cd ~/.fonts
 curl -fLo "Ubuntu Mono derivative Powerline.ttf" https://github.com/powerline/fonts/raw/master/UbuntuMono/Ubuntu%20Mono%20derivative%20Powerline.ttf
 fc-cache -vf ~/.fonts/
 cd ~
 
-# Update terminal fonts so vim airline is pretty
+# Select gnome-terminal fonts
 # TODO: make ir work
 # gconftool-2 --set /apps/gnome-terminal/profiles/Default/font --type string "Ubuntu Mono derivative Powerline 13"
 # gconftool-2 --set /apps/gnome-terminal/profiles/Default/use_system_font --type=boolean false
@@ -30,10 +36,6 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.c
 
 # install vim plugins
 vim -c "PlugInstall|qa"
-
-# install favorite terminal apps
-sudo apt-get update
-sudo apt-get install zsh tmux vim-gnome silversearcher-ag dconf-cli
 
 # install oh-my-zsh
 wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh

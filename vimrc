@@ -78,6 +78,9 @@ Plug 'ryanoasis/vim-devicons'
 " Tern - awesome js tools
 Plug 'ternjs/tern_for_vim'
 
+" autocomplete
+Plug 'Valloric/YouCompleteMe', { 'do': './install.py --tern-completer' }
+
 call plug#end()
 
 " Use 256 colours

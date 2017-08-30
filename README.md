@@ -21,6 +21,10 @@ sudo bash install.sh
 
 ## TODOs
 
+* programming languages installation
+  * node
+  * ruby
+  * ruby
 * feedback info while installing
 * command to uninstall
 * automate gnome terminal fonts selection
