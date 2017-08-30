@@ -16,11 +16,12 @@ cd ~/.local/share/fonts && curl -fLo "Droid Sans Mono for Powerline Nerd Font Co
 # install anonymous pro fonts
 mkdir -p ~/.fonts
 cd ~/.fonts
-curl -fLo "Anonymice Powerline Bold Italic.ttf" https://github.com/powerline/fonts/raw/master/AnonymousPro/Anonymice%20Powerline%20Bold%20Italic.ttf
-curl -fLo "Anonymice Powerline Bold.ttf" https://github.com/powerline/fonts/raw/master/AnonymousPro/Anonymice%20Powerline%20Bold.ttf
-curl -fLo "Anonymice Powerline Italic.ttf" https://github.com/powerline/fonts/raw/master/AnonymousPro/Anonymice%20Powerline%20Italic.ttf
-curl -fLo "Anonymice Powerline.ttf" https://github.com/powerline/fonts/raw/master/AnonymousPro/Anonymice%20Powerline.ttf
+curl -fLo "Ubuntu Mono derivative Powerline.ttf" https://github.com/powerline/fonts/raw/master/UbuntuMono/Ubuntu%20Mono%20derivative%20Powerline.ttf
 fc-cache -vf ~/.fonts/
+
+# TODO: make ir work
+# gconftool-2 --set /apps/gnome-terminal/profiles/Default/font --type string "Ubuntu Mono derivative Powerline 13"
+# gconftool-2 --set /apps/gnome-terminal/profiles/Default/use_system_font --type=boolean false
 
 # install vim plugin manager
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
