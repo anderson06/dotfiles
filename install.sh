@@ -18,7 +18,9 @@ mkdir -p ~/.fonts
 cd ~/.fonts
 curl -fLo "Ubuntu Mono derivative Powerline.ttf" https://github.com/powerline/fonts/raw/master/UbuntuMono/Ubuntu%20Mono%20derivative%20Powerline.ttf
 fc-cache -vf ~/.fonts/
+cd ~
 
+# Update terminal fonts so vim airline is pretty
 # TODO: make ir work
 # gconftool-2 --set /apps/gnome-terminal/profiles/Default/font --type string "Ubuntu Mono derivative Powerline 13"
 # gconftool-2 --set /apps/gnome-terminal/profiles/Default/use_system_font --type=boolean false
@@ -31,8 +33,11 @@ vim -c "PlugInstall|qa"
 
 # install favorite terminal apps
 sudo apt-get update
-sudo apt-get install zsh tmux vim-gnome silversearcher-ag
+sudo apt-get install zsh tmux vim-gnome silversearcher-ag dconf-cli
 
 # install oh-my-zsh
 wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh
 chsh -s `which zsh`
+
+# install Dracula color scheme
+wget -O xt  http://git.io/v3D4o && chmod +x xt && ./xt && rm xt
