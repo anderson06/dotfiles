@@ -84,6 +84,9 @@ Plug 'Valloric/YouCompleteMe', { 'do': './install.py --tern-completer' }
 " syntatic checker
 Plug 'vim-syntastic/syntastic'
 
+" git gutter
+Plug 'airblade/vim-gitgutter'
+
 call plug#end()
 
 " Use 256 colours
