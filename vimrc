@@ -84,6 +84,9 @@ Plug 'Valloric/YouCompleteMe', { 'do': './install.py --tern-completer' }
 " syntatic checker
 Plug 'vim-syntastic/syntastic'
 
+" git gutter
+Plug 'airblade/vim-gitgutter'
+
 call plug#end()
 
 " Use 256 colours
@@ -116,7 +119,7 @@ if !exists(":DiffOrig")
 endif
 
 " usa o clipboard do sistema para copiar e colar no vim
-set clipboard=unnamed
+set clipboard=unnamedplus
 
 " habilita syntax highlighting do jsx dentro de arquivos js
 let g:jsx_ext_required = 0
@@ -138,10 +141,10 @@ nmap <leader>ne :NERDTreeToggle<cr>
 imap jj <Esc>
 
 " copy and paste
-vmap <C-c> "+yi
-vmap <C-x> "+c
-vmap <C-v> c<ESC>"+p
-imap <C-v> <ESC>"+pa
+" vmap <C-c> "+yi
+" vmap <C-x> "+c
+" vmap <C-v> c<ESC>"+p
+" imap <C-v> <ESC>"+pa
 
 " habilita a sintaxe colorida quando o terminal pode exibir cores
 syntax on
@@ -358,6 +361,8 @@ set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Nerd\ Font\ Complete\ 12
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 
