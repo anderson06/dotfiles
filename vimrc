@@ -84,7 +84,7 @@ Plug 'Valloric/YouCompleteMe', { 'do': './install.py --tern-completer' }
 " syntatic checker
 Plug 'vim-syntastic/syntastic'
 
-" git gutter
+" indicates git changes in the gutter
 Plug 'airblade/vim-gitgutter'
 
 call plug#end()
