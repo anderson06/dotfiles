@@ -1,6 +1,10 @@
+#!/bin/bash
+
+sh ./install-vim.sh
+
 # install favorite terminal apps
 sudo apt-get update
-sudo apt-get install zsh tmux vim-gnome silversearcher-ag dconf-cli build-essential cmake python-dev python3-dev
+sudo apt-get install zsh tmux silversearcher-ag dconf-cli build-essential cmake python-dev python3-dev
 
 # clean
 rm -fr ~/.gitconfig
