@@ -82,7 +82,7 @@ Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }
 Plug 'Valloric/YouCompleteMe', { 'do': './install.py --tern-completer' }
 
 " syntatic checker
-Plug 'vim-syntastic/syntastic'
+Plug 'w0rp/ale'
 
 " indicates git changes in the gutter
 Plug 'airblade/vim-gitgutter'
@@ -353,21 +353,3 @@ nnoremap K :Ack <cword><cr>
 
 " These are the basic settings to get the font to work (required):
 set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Nerd\ Font\ Complete\ 12
-
-" --------------------------------------
-" syntastic
-" --------------------------------------
-
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-
-" Custom Settings
-
-let g:syntastic_javascript_checkers = ['eslint']
-let g:syntastic_error_symbol = '❌'
-let g:syntastic_warning_symbol = '⚠️'
