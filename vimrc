@@ -79,7 +79,7 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }
 
 " autocomplete
-Plug 'Valloric/YouCompleteMe', { 'do': './install.py --tern-completer' }
+" Plug 'Valloric/YouCompleteMe', { 'do': './install.py --tern-completer' }
 
 " syntatic checker
 Plug 'w0rp/ale'
