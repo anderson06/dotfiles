@@ -6,18 +6,7 @@ sh ./install-vim.sh
 sudo apt-get update
 sudo apt-get install zsh tmux silversearcher-ag dconf-cli build-essential cmake python-dev python3-dev
 
-# clean
-rm -fr ~/.gitconfig
-rm -fr ~/.tmux.conf
-rm -fr ~/.vimrc
-rm -fr ~/.tern-config
-
-# link
-DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-ln -sv $DOTFILES_DIR/gitconfig ~/.gitconfig
-ln -sv $DOTFILES_DIR/tmux.conf ~/.tmux.conf
-ln -sv $DOTFILES_DIR/vimrc ~/.vimrc
-ln -sv $DOTFILES_DIR/tern-config ~/.tern-config
+sh ./update-dotfiles.sh
 
 # install vim-icons fonts
 mkdir -p ~/.local/share/fonts

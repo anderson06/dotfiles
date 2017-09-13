@@ -350,3 +350,10 @@ nnoremap K :Ack <cword><cr>
 
 " These are the basic settings to get the font to work (required):
 set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Nerd\ Font\ Complete\ 12
+
+" --------------------------------------
+" git gutter
+" --------------------------------------
+
+" toggle signs faster
+set updatetime=250
