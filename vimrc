@@ -30,7 +30,9 @@ Plug 'tpope/vim-commentary'
 Plug 'nathanaelkane/vim-indent-guides'
 
 " fuzy file finder
-Plug 'kien/ctrlp.vim'
+" Plug 'kien/ctrlp.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 
 " quoting/parenthesizing made simple
 Plug 'tpope/vim-surround'
@@ -294,32 +296,32 @@ nmap <leader>bl :ls<CR>
 " --------------------------------------
 
 " habilita arquivos ocutos na busca do ctrlp
-let g:ctrlp_show_hidden=1
+" let g:ctrlp_show_hidden=1
 
 " disable ctrlp's feature where it tries to intelligently work out the current working directory to search within
-let g:ctrlp_working_path_mode=0
+" let g:ctrlp_working_path_mode=0
 
 " não permite que o ctrlp tome toda a tela
-let g:ctrlp_max_height=30
+" let g:ctrlp_max_height=30
 
 " Setup some default ignores
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/](\.(git|hg|svn)|\_site)$',
-  \ 'file': '\v\.(exe|so|dll|class|png|jpg|jpeg)$',
-\}
+" let g:ctrlp_custom_ignore = {
+"   \ 'dir':  '\v[\/](\.(git|hg|svn)|\_site)$',
+"   \ 'file': '\v\.(exe|so|dll|class|png|jpg|jpeg)$',
+" \}
 
 " Use the nearest .git directory as the cwd
 " This makes a lot of sense if you are working on a project that is in version
 " control. It also supports works with .svn, .hg, .bzr.
-let g:ctrlp_working_path_mode = 'r'
+" let g:ctrlp_working_path_mode = 'r'
 
 " Use a leader instead of the actual named binding
-nmap <leader>p :CtrlP<cr>
+" nmap <leader>p :CtrlP<cr>
 
 " Easy bindings for its various modes
-nmap <leader>bb :CtrlPBuffer<cr>
-nmap <leader>bm :CtrlPMixed<cr>
-nmap <leader>bs :CtrlPMRU<cr>
+" nmap <leader>bb :CtrlPBuffer<cr>
+" nmap <leader>bm :CtrlPMixed<cr>
+" nmap <leader>bs :CtrlPMRU<cr>
 
 " --------------------------------------
 " Silver Searcher
