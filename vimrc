@@ -136,12 +136,6 @@ nmap <leader>ne :NERDTreeToggle<cr>
 " Mapeia o esc do modo de inserção para jj
 imap jj <Esc>
 
-" copy and paste
-" vmap <C-c> "+yi
-" vmap <C-x> "+c
-" vmap <C-v> c<ESC>"+p
-" imap <C-v> <ESC>"+pa
-
 " habilita a sintaxe colorida quando o terminal pode exibir cores
 syntax on
 
@@ -298,38 +292,6 @@ nmap <leader>bq :bp <BAR> bd #<CR>
 nmap <leader>bl :ls<CR>
 
 " --------------------------------------
-" CtrlP
-" --------------------------------------
-
-" habilita arquivos ocutos na busca do ctrlp
-" let g:ctrlp_show_hidden=1
-
-" disable ctrlp's feature where it tries to intelligently work out the current working directory to search within
-" let g:ctrlp_working_path_mode=0
-
-" não permite que o ctrlp tome toda a tela
-" let g:ctrlp_max_height=30
-
-" Setup some default ignores
-" let g:ctrlp_custom_ignore = {
-"   \ 'dir':  '\v[\/](\.(git|hg|svn)|\_site)$',
-"   \ 'file': '\v\.(exe|so|dll|class|png|jpg|jpeg)$',
-" \}
-
-" Use the nearest .git directory as the cwd
-" This makes a lot of sense if you are working on a project that is in version
-" control. It also supports works with .svn, .hg, .bzr.
-" let g:ctrlp_working_path_mode = 'r'
-
-" Use a leader instead of the actual named binding
-" nmap <leader>p :CtrlP<cr>
-
-" Easy bindings for its various modes
-" nmap <leader>bb :CtrlPBuffer<cr>
-" nmap <leader>bm :CtrlPMixed<cr>
-" nmap <leader>bs :CtrlPMRU<cr>
-
-" --------------------------------------
 " Silver Searcher
 " --------------------------------------
 
@@ -337,21 +299,13 @@ if executable('ag')
   " Use ag over grep
   set grepprg=ag\ --nogroup\ --nocolor
 
-  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-
-  " ag is fast enough that CtrlP doesn't need to cache
-  let g:ctrlp_use_caching = 0
+  " use it in ack.vim
+  let g:ackprg = 'ag --column'
 endif
 
 " --------------------------------------
 " ack.vim
 " --------------------------------------
-
-if executable('ag')
-  let g:ackprg = 'ag --column'
-endif
-
 nnoremap \ :Ack<SPACE>
 
 " bind K to search word under cursor
@@ -369,4 +323,5 @@ set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Nerd\ Font\ Complete\ 12
 " --------------------------------------
 
 " toggle signs faster
+imap <c-x><c-o> <plug>(fzf-complete-line)
 set updatetime=250
