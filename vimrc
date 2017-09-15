@@ -264,19 +264,8 @@ map <leader>pg :GFiles<cr>
 map <leader>pt :Tags<cr>
 
 " --------------------------------------
-" vim-airline
-" --------------------------------------
-"
- " Enable the list of buffers
-let g:airline#extensions#tabline#enabled = 1
-
-" Show just the filename
-let g:airline#extensions#tabline#fnamemod = ':t'
-
-" Add powerline fonts
-let g:airline_powerline_fonts = 1
-
 " buffer shortcuts
+" --------------------------------------
 
 " To open a new empty buffer
 nmap <leader>T :enew<cr>
@@ -293,6 +282,19 @@ nmap <leader>bq :bp <BAR> bd #<CR>
 
 " Show all open buffers and their status
 nmap <leader>bl :ls<CR>
+
+" --------------------------------------
+" vim-airline
+" --------------------------------------
+
+" Enable the list of buffers
+let g:airline#extensions#tabline#enabled = 1
+
+" Show just the filename
+let g:airline#extensions#tabline#fnamemod = ':t'
+
+" Add powerline fonts
+let g:airline_powerline_fonts = 1
 
 " --------------------------------------
 " Silver Searcher
