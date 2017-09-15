@@ -260,6 +260,9 @@ if exists('g:loaded_webdevicons')
   call webdevicons#refresh()
 endif
 
+" remove o highlight da última busca
+nnoremap <CR> :noh<CR><CR>
+
 " --------------------------------------
 " vim-airline
 " --------------------------------------
