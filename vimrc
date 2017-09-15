@@ -50,9 +50,6 @@ Plug 'tpope/vim-repeat'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
-" manage buffer
-Plug 'jeetsukumaran/vim-buffergator'
-
 " tmux/vim navigation
 Plug 'christoomey/vim-tmux-navigator'
 
@@ -262,6 +259,12 @@ endif
 
 " remove o highlight da última busca
 nnoremap <CR> :noh<CR><CR>
+
+" fzf maps
+map <leader>pb :Buffers<cr>
+map <leader>pf :Files<cr>
+map <leader>pg :GFiles<cr>
+map <leader>pt :Tags<cr>
 
 " --------------------------------------
 " vim-airline
