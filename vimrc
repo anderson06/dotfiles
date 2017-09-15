@@ -228,6 +228,9 @@ set encoding=utf-8
 " recarrega automaticamente arquivos que foram editados fora do vim
 set autoread
 
+" Show the 80th char column
+set colorcolumn=80
+
 " pula para a ultima posição do cursor
 autocmd BufReadPost *
   \ if line("'\"") > 0 && line("'\"") <= line("$") |
