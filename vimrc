@@ -94,6 +94,7 @@ set t_Co=256
 " color scheme
 syntax on
 colorscheme gruvbox
+set background=dark
 
 " Hightlight current line and column
 set cursorline
