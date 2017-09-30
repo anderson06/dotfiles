@@ -34,5 +34,6 @@ vim -c "PlugInstall|qa"
 wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh
 chsh -s `which zsh`
 
-# install Dracula color scheme
-wget -O xt  http://git.io/v3D4o && chmod +x xt && ./xt && rm xt
+# use Gogh to set up Gruvbox Dark colors on gnome terminal
+# https://github.com/Mayccoll/Gogh
+wget -O xt https://git.io/v7eBS && chmod +x xt && ./xt && rm xt

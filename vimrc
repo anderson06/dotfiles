@@ -64,6 +64,9 @@ Plug 'mileszs/ack.vim'
 
 " Colors
 Plug 'dracula/vim'
+Plug 'junegunn/seoul256.vim'
+Plug 'chriskempson/base16-vim'
+Plug 'morhetz/gruvbox'
 
 " Git magic
 Plug 'tpope/vim-fugitive'
@@ -90,7 +93,7 @@ set t_Co=256
 
 " color scheme
 syntax on
-colorscheme dracula
+colorscheme gruvbox
 
 " Hightlight current line and column
 set cursorline
