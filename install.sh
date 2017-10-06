@@ -4,7 +4,7 @@ sh ./install-vim.sh
 
 # install favorite terminal apps
 sudo apt-get update
-sudo apt-get install zsh tmux silversearcher-ag dconf-cli build-essential cmake python-dev python3-dev
+sudo apt-get install zsh tmux silversearcher-ag dconf-cli build-essential cmake python-dev python3-dev xclip
 
 sh ./update-dotfiles.sh
 
@@ -20,7 +20,7 @@ fc-cache -vf ~/.fonts/
 cd ~
 
 # Select gnome-terminal fonts
-# TODO: make ir work
+# TODO: make it work
 # gconftool-2 --set /apps/gnome-terminal/profiles/Default/font --type string "Ubuntu Mono derivative Powerline 13"
 # gconftool-2 --set /apps/gnome-terminal/profiles/Default/use_system_font --type=boolean false
 
