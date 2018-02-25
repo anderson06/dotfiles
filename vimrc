@@ -261,6 +261,9 @@ endif
 " remove o highlight da última busca
 nnoremap <CR> :noh<CR><CR>
 
+" pula para o último buffer editado com backspace
+nnoremap <bs> <c-^>
+
 " fzf maps
 map <leader>pb :Buffers<cr>
 map <leader>pf :Files<cr>
