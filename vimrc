@@ -321,7 +321,7 @@ endif
 nnoremap \ :Ack<SPACE>
 
 " bind K to search word under cursor
-nnoremap K :Ack <cword><cr>
+"nnoremap K :Ack <cword><cr>
 
 " --------------------------------------
 " devfonts
