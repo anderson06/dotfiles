@@ -21,6 +21,7 @@ sudo bash install.sh
 
 ## TODOs
 
+* add zsh personal alias
 * programming languages installation
   * node
     * eslint
@@ -29,6 +30,4 @@ sudo bash install.sh
 * feedback info while installing
 * command to uninstall
 * automate gnome terminal fonts selection
-* vim plugins
-  - YouCompleteMe
 
