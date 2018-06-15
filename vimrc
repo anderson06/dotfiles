@@ -337,3 +337,8 @@ set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Nerd\ Font\ Complete\ 12
 " toggle signs faster
 imap <c-x><c-o> <plug>(fzf-complete-line)
 set updatetime=250
+
+" remap shortcuts
+nmap <Leader>gs <Plug>GitGutterStageHunk
+nmap <Leader>gu <Plug>GitGutterUndoHunk
+nmap <Leader>gp <Plug>GitGutterPreviewHunk
