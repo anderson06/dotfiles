@@ -140,6 +140,9 @@ nmap <leader>ne :NERDTreeToggle<cr>
 " Mapeia o esc do modo de inserção para jj
 imap jj <Esc>
 
+" copy current path to clipboard
+nmap <leader>cp :let @+=expand("%:p")<CR>
+
 " habilita a sintaxe colorida quando o terminal pode exibir cores
 syntax on
 
