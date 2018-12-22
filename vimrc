@@ -144,7 +144,7 @@ nmap <leader>ne :NERDTreeToggle<cr>
 imap jj <Esc>
 
 " copy current path to clipboard
-nmap <leader>cp :let @+=expand("%:p")<CR>
+nmap <leader>cp :let @+=expand("%")<CR>
 
 " habilita a sintaxe colorida quando o terminal pode exibir cores
 syntax on
