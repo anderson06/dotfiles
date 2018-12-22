@@ -86,6 +86,9 @@ Plug 'w0rp/ale'
 " indicates git changes in the gutter
 Plug 'airblade/vim-gitgutter'
 
+" it makes vim focus events works with tmux autoread
+Plug 'tmux-plugins/vim-tmux-focus-events'
+
 call plug#end()
 
 " Use 256 colours
@@ -345,3 +348,10 @@ set updatetime=250
 nmap <Leader>gs <Plug>GitGutterStageHunk
 nmap <Leader>gu <Plug>GitGutterUndoHunk
 nmap <Leader>gp <Plug>GitGutterPreviewHunk
+
+" --------------------------------------
+" vim behavior
+" --------------------------------------
+
+" triggers autoread whenever I switch buffer or when focusing
+au FocusGained,BufEnter * :silent! !
