@@ -20,11 +20,6 @@ curl -fLo "Ubuntu Mono derivative Powerline.ttf" https://github.com/powerline/fo
 fc-cache -vf ~/.fonts/
 cd ~
 
-# Select gnome-terminal fonts
-# TODO: make it work
-# gconftool-2 --set /apps/gnome-terminal/profiles/Default/font --type string "Ubuntu Mono derivative Powerline 13"
-# gconftool-2 --set /apps/gnome-terminal/profiles/Default/use_system_font --type=boolean false
-
 # install vim plugin manager
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
@@ -37,4 +32,4 @@ chsh -s `which zsh`
 
 # use Gogh to set up Gruvbox Dark colors on gnome terminal
 # https://github.com/Mayccoll/Gogh
-wget -O xt https://git.io/v7eBS && chmod +x xt && ./xt && rm xt
+# wget -O xt https://git.io/v7eBS && chmod +x xt && ./xt && rm xt
