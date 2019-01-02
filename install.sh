@@ -5,7 +5,7 @@ sh ./install-vim.sh
 # install favorite terminal apps
 sudo add-apt-repository universe
 sudo apt-get update
-sudo apt-get install fonts-firacode zsh tmux silversearcher-ag dconf-cli build-essential cmake python-dev python3-dev xclip
+sudo apt-get install neovim fonts-firacode zsh tmux silversearcher-ag dconf-cli build-essential cmake python-dev python3-dev xclip
 
 sh ./update-dotfiles.sh
 
