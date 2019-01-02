@@ -9,8 +9,11 @@ curl -fLo "Ubuntu Mono derivative Powerline.ttf" https://github.com/powerline/fo
 fc-cache -vf ~/.fonts/
 cd ~
 
-# install vim plugin manager
+# install plugin manager
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+# install plugin manager for neovim
+curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 # install vim plugins
 vim -c "PlugInstall|qa"
