@@ -141,7 +141,7 @@ let mapleader = "\<Space>"
 nmap <leader>ne :NERDTreeToggle<cr>
 
 " Mapeia o esc do modo de inserção para jj
-imap jj <Esc>
+" imap jj <Esc>
 
 " copy current path to clipboard
 nmap <leader>cp :let @+=expand("%")<CR>
@@ -249,6 +249,10 @@ autocmd BufReadPost *
 
 " não exibir estes arquivos
 set wildignore+=*/.git/*,*/.hg/*,*/.svn/*.,*/.DS_Store
+
+" fix slow navigation on ruby files
+" https://stackoverflow.com/questions/16902317/vim-slow-with-ruby-syntax-highlighting
+set re=1
 
 " remove espaço branco ao salvar
 autocmd BufWritePre * :%s/\s\+$//e
