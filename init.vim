@@ -75,6 +75,7 @@ set mouse=a
 set inccommand=split
 
 " Set colorscheme preferenses
+set termguicolors
 colorscheme gruvbox
 set background=dark
 
