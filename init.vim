@@ -191,3 +191,13 @@ let g:UltiSnipsEditSplit="vertical"
 let g:UltiSnipsSnippetsDir="~/.configs/nvim/UltiSnips"
 
 nmap <Leader>use :UltiSnipsEdit<cr>
+
+" --------------------------------------
+" w0rp/ale configs
+" --------------------------------------
+
+" Enable eslint to fix js files with :ALEFix
+let g:ale_fixers = { 'javascript': ['eslint'] }
+
+" Auto call ALEFix on save
+let g:ale_fix_on_save = 1
