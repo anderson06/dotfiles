@@ -210,7 +210,7 @@ vim.o.breakindent = true
 
 -- Save undo history
 vim.o.undofile = true
-vim.o.undodir = '~/.vim/undo-dir'
+vim.o.undodir = vim.fn.expand('~/.vim/undo-dir')
 
 -- Case-insensitive searching UNLESS \C or capital in search
 vim.o.ignorecase = true
