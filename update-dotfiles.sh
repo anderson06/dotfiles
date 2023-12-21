@@ -4,12 +4,10 @@
 # rm -fr ~/.vimrc
 # rm -fr ~/.vim/after/plugin/after-load.vim
 rm -fr ~/.config/nvim/init.lua
-# rm -fr ~/.config/kitty/kitty.conf
 
 # create dirs
 # mkdir -p ~/.vim/after/plugin/
 mkdir -p ~/.config/nvim/
-# mkdir -p ~/.config/kitty/
 # mkdir -p ~/.local/share/nvim/backup
 
 # link
@@ -19,4 +17,3 @@ DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # ln -sv $DOTFILES_DIR/vimrc ~/.vimrc
 # ln -sv $DOTFILES_DIR/after-load.vim ~/.vim/after/plugin/after-load.vim
 ln -sv $DOTFILES_DIR/init.lua ~/.config/nvim/init.lua
-# ln -sv $DOTFILES_DIR/kitty.conf ~/.config/kitty/kitty.conf
