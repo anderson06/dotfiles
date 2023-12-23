@@ -3,7 +3,7 @@
 mv ~/.config/nvim ~/nvim_backup
 mkdir -p ~/.config/nvim/
 DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-ln -sv $DOTFILES_DIR/nvim/ ~/.config/nvim/
+ln -sv $DOTFILES_DIR/nvim/ ~/.config/
 
 # rm -fr ~/.gitconfig
 # rm -fr ~/.tmux.conf
