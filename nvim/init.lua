@@ -567,4 +567,12 @@ vim.o.relativenumber = true
 vim.keymap.set('n', '<leader>n', ':Neotree filesystem reveal toggle left<CR>', {})
 vim.keymap.set('n', '<leader>bf', ':Neotree buffers reveal toggle float<CR>', {})
 
+-- " Mappings
+-- nmap <leader>ne :NERDTreeToggle<cr>
+-- nmap <leader>cp :let @+=expand("%")<cr>
+-- nnoremap <cr> :noh<cr>
+-- nnoremap <bs> <c-^>
+-- nmap <leader>T :enew<cr>
+-- nmap <leader>l :bnext<cr>
+-- nmap <leader>h :bprevious<cr>
 
