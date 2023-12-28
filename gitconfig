@@ -1,5 +1,6 @@
 [user]
-	name = anderson06
-	email = andersoncampos.m@gmail.com
+name = anderson06
+email = andersoncampos.m@gmail.com
+
 [core]
-  editor = nvim
+editor = nvim
