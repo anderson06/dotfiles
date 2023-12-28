@@ -192,7 +192,7 @@ require('lazy').setup({
 -- NOTE: You can change these options as you wish!
 
 -- Set highlight on search
-vim.o.hlsearch = false
+-- vim.o.hlsearch = false
 
 -- Make line numbers default
 vim.wo.number = true
@@ -575,4 +575,4 @@ vim.keymap.set('n', '<leader>bf', ':Neotree buffers reveal toggle float<CR>', {}
 -- nmap <leader>T :enew<cr>
 -- nmap <leader>l :bnext<cr>
 -- nmap <leader>h :bprevious<cr>
-
+require("core.keymaps")
