@@ -19,9 +19,6 @@ require("lazy").setup("plugins")
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
 
-vim.o.scrolloff = 8
-vim.o.relativenumber = true
-
 -- File tree mappings
 vim.keymap.set('n', '<leader>n', ':Neotree filesystem reveal toggle left<CR>', {})
 vim.keymap.set('n', '<leader>bf', ':Neotree buffers reveal toggle float<CR>', {})
