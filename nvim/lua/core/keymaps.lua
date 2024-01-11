@@ -26,3 +26,6 @@ vim.keymap.set("n", "<leader>cp", function()
   vim.fn.setreg("+", path)
   vim.notify('Copied "' .. path .. '" to the clipboard!')
 end)
+
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
