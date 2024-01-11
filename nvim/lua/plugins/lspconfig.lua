@@ -60,7 +60,6 @@ return {
     'folke/neodev.nvim',
   },
   config = function()
-
     -- mason-lspconfig requires that these setup functions are called in this order
     -- before setting up the servers.
     require('mason').setup()
@@ -80,7 +79,7 @@ return {
           telemetry = { enable = false },
           diagnostics = {
             -- Get the language server to recognize the `vim` global
-            globals = {'vim'},
+            globals = { 'vim' },
           },
         },
       },
@@ -112,7 +111,5 @@ return {
         }
       end,
     }
-
   end,
 }
-
