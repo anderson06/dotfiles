@@ -11,13 +11,5 @@ return {
         null_ls.builtins.formatting.prettier,
       },
     })
-
-    vim.keymap.set("n", "<leader>f", function()
-      vim.lsp.buf.format {
-        -- Never use tsserver for formatting
-        -- This avoids conflicts with prettier
-        filter = function(client) return client.name ~= "tsserver" end
-      }
-    end, {})
   end,
 }
