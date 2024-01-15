@@ -3,10 +3,6 @@
 -- Remove search highlights
 vim.keymap.set("n", "<leader>h", ":nohlsearch<CR>", {})
 
--- Keep cursor center aligned after scroll
-vim.keymap.set("n", "<C-d>", "<C-d>zz", {})
-vim.keymap.set("n", "<C-u>", "<C-u>zz", {})
-
 -- Keymaps for better default experience
 vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
 
