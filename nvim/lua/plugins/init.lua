@@ -1,16 +1,16 @@
 return {
   -- Work with github
-  'tpope/vim-rhubarb',
+  "tpope/vim-rhubarb",
 
   -- Detect tabstop and shiftwidth automatically
-  'tpope/vim-sleuth',
+  "tpope/vim-sleuth",
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
+  { "numToStr/Comment.nvim", opts = {} },
 
   -- Make background transparent
-  'xiyaowong/transparent.nvim',
+  "xiyaowong/transparent.nvim",
 
   -- Add nice keymaps for []
-  'tpope/vim-unimpaired',
+  "tpope/vim-unimpaired",
 }
