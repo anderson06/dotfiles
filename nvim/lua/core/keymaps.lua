@@ -18,7 +18,7 @@ vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagn
 
 -- Copy current file path into clipboard
 vim.keymap.set("n", "<leader>cp", function()
-  local path = vim.fn.expand("%")
+  local path = vim.fn.expand("%:~:.")
   vim.fn.setreg("+", path)
   vim.notify('Copied "' .. path .. '" to the clipboard!')
 end)
