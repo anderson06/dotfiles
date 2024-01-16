@@ -3,10 +3,6 @@
 -- Remove search highlights
 vim.keymap.set("n", "<leader>h", ":nohlsearch<CR>", {})
 
--- Keep cursor center aligned after scroll
-vim.keymap.set("n", "<C-d>", "<C-d>zz", {})
-vim.keymap.set("n", "<C-u>", "<C-u>zz", {})
-
 -- Keymaps for better default experience
 vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
 
@@ -22,7 +18,7 @@ vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagn
 
 -- Copy current file path into clipboard
 vim.keymap.set("n", "<leader>cp", function()
-  local path = vim.fn.expand("%")
+  local path = vim.fn.expand("%:~:.")
   vim.fn.setreg("+", path)
   vim.notify('Copied "' .. path .. '" to the clipboard!')
 end)
@@ -42,7 +38,7 @@ vim.keymap.set("n", "N", "Nzzzv")
 vim.keymap.set("x", "<leader>p", "\"_dP")
 
 -- Replace in real time all ocurrences of string under cursor
-vim.keymap.set("n", "<leader>x", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+vim.keymap.set("n", "<leader>ss", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 
 -- Give execution permission to current file
--- vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
+vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })

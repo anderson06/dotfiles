@@ -10,4 +10,7 @@ return {
 
   -- Make background transparent
   'xiyaowong/transparent.nvim',
+
+  -- Add nice keymaps for []
+  'tpope/vim-unimpaired',
 }
