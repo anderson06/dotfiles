@@ -42,3 +42,7 @@ vim.keymap.set("n", "<leader>ss", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left>
 
 -- Give execution permission to current file
 vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
+
+-- Small jumps
+vim.keymap.set("n", "<leader>j", "5j")
+vim.keymap.set("n", "<leader>k", "5k")
