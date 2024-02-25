@@ -1,7 +1,7 @@
 -- " Mappings
 
 -- Remove search highlights
-vim.keymap.set("n", "<leader>h", ":nohlsearch<CR>", {})
+vim.keymap.set("n", "<leader>nhs", ":nohlsearch<CR>", {})
 
 -- Keymaps for better default experience
 vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
