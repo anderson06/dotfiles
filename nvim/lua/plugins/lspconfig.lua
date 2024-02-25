@@ -40,6 +40,11 @@ local on_attach = function(_, bufnr)
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, "[W]orkspace [L]ist Folders")
 
+  -- diagnostic navigation
+  nmap("<leader>ds", vim.diagnostic.open_float(0, { scope = "line" }), "[D]iagnostic [S]how")
+  nmap("<leader>dn", vim.diagnostic.goto_next(), "[D]iagnostic [N]ext")
+  nmap("<leader>dp", vim.diagnostic.goto_next(), "[D]iagnostic [P]revious")
+
   -- Create a command `:Format` local to the LSP buffer
   vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
     vim.lsp.buf.format()
