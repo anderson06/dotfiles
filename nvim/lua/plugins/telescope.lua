@@ -29,6 +29,7 @@ return {
             ["<C-d>"] = false,
           },
         },
+        wrap_results = true,
       },
     })
 
