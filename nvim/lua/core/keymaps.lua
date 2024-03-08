@@ -1,7 +1,7 @@
 -- " Mappings
 
 -- Remove search highlights
-vim.keymap.set("n", "<leader>hs", ":nohlsearch<CR>", { desc = "No [H]ighlight [S]earch"})
+vim.keymap.set("n", "<leader>hs", ":nohlsearch<CR>", { desc = "No [H]ighlight [S]earch" })
 
 -- Keymaps for better default experience
 vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
@@ -20,7 +20,7 @@ vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagn
 vim.keymap.set("n", "<leader>cp", function()
   local path = vim.fn.expand("%:~:.")
   vim.fn.setreg("+", path)
-  vim.notify('Copied "' .. path .. '" to the clipboard!')
+  vim.notify("Copied \"" .. path .. "\" to the clipboard!")
 end)
 
 -- Move lines in visual mode
@@ -46,3 +46,9 @@ vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 -- Small jumps
 vim.keymap.set("n", "<leader>j", "5j")
 vim.keymap.set("n", "<leader>k", "5k")
+
+-- Go to last non empty line and vertical center it
+vim.keymap.set("n", "<leader>G", "G{}kzz")
+
+vim.keymap.set("n", "QQ", ":q!<enter>", { desc = "Quick Quit", noremap = false })
+vim.keymap.set("n", "WW", ":w!<enter>", { desc = "Quick Write", noremap = false })
