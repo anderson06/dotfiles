@@ -52,3 +52,4 @@ vim.keymap.set("n", "<leader>G", "G{}kzz")
 
 vim.keymap.set("n", "QQ", ":q!<enter>", { desc = "Quick Quit", noremap = false })
 vim.keymap.set("n", "WW", ":w!<enter>", { desc = "Quick Write", noremap = false })
+vim.keymap.set("n", "<BS>", "<C-^>", { desc = "Go to previous file", noremap = false })
