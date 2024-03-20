@@ -2,9 +2,6 @@ return {
   -- Work with github
   "tpope/vim-rhubarb",
 
-  -- Detect tabstop and shiftwidth automatically
-  "tpope/vim-sleuth",
-
   -- Add nice keymaps for []
   "tpope/vim-unimpaired",
 
