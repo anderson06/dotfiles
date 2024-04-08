@@ -10,10 +10,10 @@ return {
     require("neo-tree").setup({
       window = {
         width = 60,
-      }
+      },
     })
 
-    vim.keymap.set("n", "<leader>n", ":Neotree filesystem reveal toggle left<CR>", {})
-    vim.keymap.set("n", "<leader>bf", ":Neotree buffers reveal toggle float<CR>", {})
+    vim.keymap.set("n", "<leader>n", "<Cmd>Neotree filesystem reveal toggle left<CR>", { desc = "Toggle neotree" })
+    vim.keymap.set("n", "<leader>bf", "<Cmd>Neotree buffers reveal toggle float<CR>", { desc = "Neotree for bufeers" })
   end,
 }
