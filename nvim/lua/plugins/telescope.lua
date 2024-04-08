@@ -28,7 +28,8 @@ return {
           },
           n = { ["<C-t>"] = trouble.open_with_trouble },
         },
-        wrap_results = true,
+        wrap_results = false,
+        path_display = { "smart" },
       },
       extensions = {
         live_grep_args = {
@@ -58,7 +59,11 @@ return {
     -- live_grep_args maps
     local live_grep_args = require("telescope").extensions.live_grep_args.live_grep_args
 
-    vim.keymap.set("n", "<leader>sg", live_grep_args, { desc = "[S]earch by [G]rep" })
+    vim.keymap.set("n", "<leader>sg", function()
+      live_grep_args(require("telescope.themes").get_dropdown({
+        winblend = 10,
+      }))
+    end, { desc = "[S]earch by [G]rep" })
 
     local lga_shortcuts = require("telescope-live-grep-args.shortcuts")
 
