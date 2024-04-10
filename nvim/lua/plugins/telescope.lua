@@ -3,7 +3,6 @@ return {
   branch = "0.1.x",
   dependencies = {
     "nvim-lua/plenary.nvim",
-    "nvim-telescope/telescope-live-grep-args.nvim",
     "princejoogie/dir-telescope.nvim",
     "/folke/trouble.nvim",
     {
@@ -15,10 +14,11 @@ return {
     },
   },
   config = function()
-    local lga_actions = require("telescope-live-grep-args.actions")
+    local telescope = require("telescope")
     local trouble = require("trouble.providers.telescope")
+    local custom_pickers = require("core.telescope-custom-pickers")
 
-    require("telescope").setup({
+    telescope.setup({
       defaults = {
         mappings = {
           i = {
@@ -29,45 +29,42 @@ return {
           n = { ["<C-t>"] = trouble.open_with_trouble },
         },
         wrap_results = false,
-        path_display = { "smart" },
       },
-      extensions = {
-        live_grep_args = {
+      pickers = {
+        live_grep = {
           mappings = {
             i = {
-              ["<C-k>"] = lga_actions.quote_prompt(),
-              ["<C-i>"] = lga_actions.quote_prompt({ postfix = " --iglob " }),
+              ["<C-f>"] = custom_pickers.actions.set_extension,
+              ["<C-l>"] = custom_pickers.actions.set_folders,
             },
           },
         },
       },
     })
 
-    pcall(require("telescope").load_extension, "fzf")
-    require("telescope").load_extension("dir")
+    telescope.load_extension("fzf")
+    telescope.load_extension("dir")
+
+    local builtin = require("telescope.builtin")
+    local themes = require("telescope.themes")
 
     vim.keymap.set("n", "<leader>/", function()
-      require("telescope.builtin").current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
+      builtin.current_buffer_fuzzy_find(themes.get_dropdown({
         winblend = 10,
         previewer = false,
       }))
     end, { desc = "[/] Fuzzily search in current buffer" })
-    vim.keymap.set("n", "<C-p>", require("telescope.builtin").git_files, { desc = "Search [G]it [F]iles" })
-    vim.keymap.set("n", "<leader>sf", require("telescope.builtin").find_files, { desc = "[S]earch [F]iles" })
-    vim.keymap.set("n", "<leader>sr", require("telescope.builtin").resume, { desc = "[S]earch [R]esume" })
 
-    -- live_grep_args maps
-    local live_grep_args = require("telescope").extensions.live_grep_args.live_grep_args
+    vim.keymap.set("n", "<C-p>", builtin.git_files, { desc = "Search [G]it [F]iles" })
+    vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "[S]earch [F]iles" })
+    vim.keymap.set("n", "<leader>sr", builtin.resume, { desc = "[S]earch [R]esume" })
+    vim.keymap.set("n", "<leader>sw", builtin.grep_string, { desc = "[S]earch currend word" })
 
     vim.keymap.set("n", "<leader>sg", function()
-      live_grep_args(require("telescope.themes").get_dropdown({
+      builtin.live_grep(require("telescope.themes").get_dropdown({
         winblend = 10,
       }))
     end, { desc = "[S]earch by [G]rep" })
-
-    local lga_shortcuts = require("telescope-live-grep-args.shortcuts")
-
-    vim.keymap.set("n", "<leader>sw", lga_shortcuts.grep_word_under_cursor, { desc = "[S]earch currend word" })
 
     -- dir-telescope maps
     vim.keymap.set("n", "<leader>fd", "<cmd>Telescope dir live_grep<CR>", { noremap = true, silent = true })
