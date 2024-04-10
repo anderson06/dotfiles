@@ -45,3 +45,13 @@ vim.o.autoindent = true
 
 vim.o.wrap = false
 
+-- Workaround GBrowse issue
+-- See https://vi.stackexchange.com/questions/38447/vim-fugitive-netrw-not-found-define-your-own-browse-to-use-gbrowse
+vim.api.nvim_create_user_command(
+  'Browse',
+  function (opts)
+    vim.fn.system { 'open', opts.fargs[1] }
+  end,
+  { nargs = 1 }
+)
+
