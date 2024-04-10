@@ -22,13 +22,17 @@ local live_grep_filters = {
 local function run_live_grep(current_input)
   -- TODO: Resume old one with same options somehow
   -- print("directories")
-  -- print(vim.inspect(live_grep_filters.directories))
-  require("telescope.builtin").live_grep({
-    additional_args = live_grep_filters.extension and function()
-      return { "-g", "*." .. live_grep_filters.extension }
-    end,
-    search_dirs = live_grep_filters.directories,
-    default_text = current_input,
+  print(vim.inspect(live_grep_filters.directories))
+
+  require("core.telescope-pretty-pickers").pretty_grep_picker({
+    picker = "live_grep",
+    options = {
+      additional_args = live_grep_filters.extension and function()
+        return { "-g", "*." .. live_grep_filters.extension }
+      end,
+      search_dirs = live_grep_filters.directories,
+      default_text = current_input,
+    },
   })
 end
 

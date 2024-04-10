@@ -55,15 +55,17 @@ return {
       }))
     end, { desc = "[/] Fuzzily search in current buffer" })
 
-    vim.keymap.set("n", "<C-p>", builtin.git_files, { desc = "Search [G]it [F]iles" })
+    vim.keymap.set("n", "<C-p>", function()
+      -- builtin.git_files
+      require("core.telescope-pretty-pickers").pretty_files_picker({ picker = "git_files" })
+    end, { desc = "Search [G]it [F]iles" })
+
     vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "[S]earch [F]iles" })
     vim.keymap.set("n", "<leader>sr", builtin.resume, { desc = "[S]earch [R]esume" })
     vim.keymap.set("n", "<leader>sw", builtin.grep_string, { desc = "[S]earch currend word" })
 
     vim.keymap.set("n", "<leader>sg", function()
-      builtin.live_grep(require("telescope.themes").get_dropdown({
-        winblend = 10,
-      }))
+      require("core.telescope-pretty-pickers").pretty_grep_picker({ picker = "live_grep" })
     end, { desc = "[S]earch by [G]rep" })
 
     -- dir-telescope maps
