@@ -38,7 +38,6 @@ return {
     end, { desc = "Format file or range (in visual mode)" })
 
     vim.keymap.set("n", "<leader>fm", function()
-      print("oi")
       conform.format({
         lsp_fallback = true,
         async = false,
