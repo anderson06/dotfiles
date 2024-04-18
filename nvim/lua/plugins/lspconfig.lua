@@ -9,15 +9,6 @@ local on_attach = function(_, bufnr)
     vim.keymap.set("n", keys, func, { buffer = bufnr, desc = desc })
   end
 
-  nmap("<leader>fm", function()
-    vim.lsp.buf.format({
-      -- Never use tsserver for formatting
-      -- This avoids conflicts with prettier
-      filter = function(client)
-        return client.name ~= "tsserver"
-      end,
-    })
-  end, "[F]ormat")
   nmap("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
   nmap("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
 
