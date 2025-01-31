@@ -1,10 +1,7 @@
 return {
   "vim-test/vim-test",
-  dependencies = {
-    "preservim/vimux",
-  },
   config = function()
-    vim.g["test#strategy"] = "vimux"
+    vim.g["test#strategy"] = "wezterm"
 
     vim.keymap.set("n", "<leader>tn", ":w | TestNearest --coverage=false<CR>", { desc = "[T]est [N]earest" })
     vim.keymap.set("n", "<leader>tf", ":w | TestFile<CR>", { desc = "[T]est [F]ile" })

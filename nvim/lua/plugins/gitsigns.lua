@@ -39,6 +39,8 @@ return {
 
         return '<Ignore>'
       end, { expr = true, buffer = bufnr, desc = 'Jump to previous hunk' })
+
+      vim.keymap.set('n', '<leader>hr', gs.reset_hunk)
     end,
   },
 }
