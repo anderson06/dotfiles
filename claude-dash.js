@@ -49,10 +49,10 @@ function classify(s) {
   return "idle";
 }
 
-function relAge(startedMs) {
+function relAge(startedMs, nowMs = Date.now()) {
   const n = Number(startedMs);
   if (!Number.isFinite(n)) return "?";
-  const secs = Math.max(0, Date.now() / 1000 - n / 1000);
+  const secs = Math.max(0, (nowMs - n) / 1000);
   if (secs < 60) return `${Math.floor(secs)}s`;
   if (secs < 3600) return `${Math.floor(secs / 60)}m`;
   if (secs < 86400) return `${Math.floor(secs / 3600)}h`;
@@ -126,11 +126,8 @@ function clock() {
   return new Date().toTimeString().slice(0, 8); // HH:MM:SS, local time
 }
 
-async function render() {
-  let cols = process.stdout.columns || 100;
-  cols = Math.max(60, cols);
-  const { sessions, err } = await fetch();
-
+// Bucket sessions by group key, each sorted newest-first. Pure.
+function groupSessions(sessions) {
   const buckets = {};
   for (const g of GROUPS) buckets[g.key] = [];
   for (const s of sessions) buckets[classify(s)].push(s);
@@ -138,10 +135,15 @@ async function render() {
     // newest first; the waiting group is already pinned on top by section order.
     buckets[key].sort((a, b) => (Number(b.startedAt) || 0) - (Number(a.startedAt) || 0));
   }
+  return buckets;
+}
+
+// Build the full screen string. Pure: no I/O, time/width are injected.
+function formatView({ sessions, err }, cols, nowMs, ts) {
+  const buckets = groupSessions(sessions);
 
   const lines = [];
   const counts = GROUPS.map((g) => `${g.emoji}${buckets[g.key].length}`).join("  ");
-  const ts = clock();
   const head = `┌─ Claude sessions ─  ${counts}  `;
   const fill = Math.max(2, cols - dwidth(head) - ts.length - 6);
   lines.push(`${B}${head}${"─".repeat(fill)}  ${ts}  ─┐${R}`);
@@ -161,7 +163,7 @@ async function render() {
         const icon = `${g.color}${padEnd(g.ilabel, ICON_W)}${R}`;
         const proj = `${CYN}${padEnd(trunc(project(s), projW), projW)}${R}`;
         const name = s.name || String(s.sessionId || "").slice(0, 8);
-        const age = relAge(s.startedAt);
+        const age = relAge(s.startedAt, nowMs);
         const nameBudget = Math.max(10, Math.floor((cols - (ICON_W + 3) - (projW + 1) - 8) / 2));
         const nameS = trunc(name, nameBudget);
         let detailText = "", detailColor = "";
@@ -190,6 +192,13 @@ async function render() {
       `${DIM}●${DIM} done   ·  refresh ${INTERVAL}s · q / Ctrl-C to quit${R}`
   );
   return lines.join("\n");
+}
+
+// Live wrapper: fetch data + inject real terminal width and clock.
+async function render() {
+  const cols = Math.max(60, process.stdout.columns || 100);
+  const result = await fetch();
+  return formatView(result, cols, Date.now(), clock());
 }
 
 function draw(body) {
@@ -251,8 +260,23 @@ async function main() {
   await tick();
 }
 
-main().catch((e) => {
-  process.stdout.write("\x1b[?25h");
-  console.error(e && e.stack ? e.stack : String(e));
-  process.exit(1);
-});
+// Run the TUI only when executed directly; stay quiet when imported (tests).
+if (require.main === module) {
+  main().catch((e) => {
+    process.stdout.write("\x1b[?25h");
+    console.error(e && e.stack ? e.stack : String(e));
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  GROUPS,
+  classify,
+  relAge,
+  project,
+  trunc,
+  dwidth,
+  padEnd,
+  groupSessions,
+  formatView,
+};

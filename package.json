@@ -1,0 +1,13 @@
+{
+  "name": "dotfiles-tools",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tooling for personal dotfiles (claude-dash, etc.)",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "vitest": "^2.1.8"
+  }
+}
