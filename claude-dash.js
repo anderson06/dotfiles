@@ -60,10 +60,17 @@ function relAge(startedMs, nowMs = Date.now()) {
 }
 
 function project(s) {
-  const cwd = String(s.cwd || "").replace(/\/+$/, "");
+  let cwd = String(s.cwd || "").replace(/\/+$/, "");
   if (!cwd) return "?";
-  // Worktrees nest under .claude/worktrees/<name>; the basename is the useful bit.
-  return cwd.split("/").pop() || cwd;
+  // Claude worktrees nest under <project>/.claude/worktrees/<branch>; use the
+  // repo dir, not the branch dir.
+  const wt = cwd.indexOf("/.claude/worktrees/");
+  if (wt !== -1) cwd = cwd.slice(0, wt);
+  let name = cwd.split("/").pop() || cwd;
+  // Sibling worktree dirs are named <project>-<JIRA-TICKET>-...; drop that
+  // suffix so the column is always the bare project name.
+  name = name.replace(/-[A-Z]{2,}-\d+.*$/, "") || name;
+  return name;
 }
 
 function trunc(text, width) {

@@ -62,10 +62,16 @@ describe("project", () => {
   it("ignores a trailing slash", () => {
     expect(project({ cwd: "/Users/me/dev/website/" })).toBe("website");
   });
-  it("uses the worktree leaf name", () => {
+  it("returns the repo name for a nested .claude/worktrees worktree", () => {
     expect(
-      project({ cwd: "/Users/me/dev/web/.claude/worktrees/FEAT-1" })
-    ).toBe("FEAT-1");
+      project({ cwd: "/Users/me/dev/website-data/.claude/worktrees/WEBSITE-1742-breadcrumb" })
+    ).toBe("website-data");
+  });
+  it("strips a trailing Jira-ticket suffix from a sibling worktree dir", () => {
+    expect(project({ cwd: "/Users/me/dev/website-data-WEBSITE-1739-grant" })).toBe("website-data");
+  });
+  it("leaves a plain project name (hyphens, no ticket) untouched", () => {
+    expect(project({ cwd: "/Users/me/dev/global-routing-redirects" })).toBe("global-routing-redirects");
   });
   it("degrades to ? when cwd is missing", () => {
     expect(project({})).toBe("?");
