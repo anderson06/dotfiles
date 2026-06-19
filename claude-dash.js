@@ -17,7 +17,7 @@
 // Keys:  q / Ctrl-C to quit.
 
 "use strict";
-const { execFile } = require("child_process");
+const { execFile, execFileSync } = require("child_process");
 
 const INTERVAL = Number(process.env.CLAUDE_DASH_INTERVAL || "3") || 3;
 
@@ -138,9 +138,39 @@ function groupSessions(sessions) {
   return buckets;
 }
 
-// Build the full screen string. Pure: no I/O, time/width are injected.
-function formatView({ sessions, err }, cols, nowMs, ts) {
+// Flat list of sessions in the exact order they're drawn (the selectable rows).
+// Mirrors formatView's group/row iteration so an index maps to the same row.
+function orderedSessions(sessions) {
   const buckets = groupSessions(sessions);
+  const out = [];
+  for (const g of GROUPS) out.push(...buckets[g.key]);
+  return out;
+}
+
+// Stable identity for a session, used to keep the selection on the same session
+// across refreshes even if the list reorders.
+function sessionKey(s) {
+  return String(s.sessionId || s.id || s.pid || "");
+}
+
+// Walk a pid up its process-parent chain until it matches a tmux pane's shell
+// pid; return that pane's id (e.g. "%7"), or null if it isn't inside a pane.
+// Pure: the pane and parent maps are injected so this is unit-testable.
+function findPaneForPid(pid, paneByShellPid, parentByPid) {
+  let cur = Number(pid);
+  for (let hops = 0; cur > 1 && hops < 30; hops++) {
+    if (paneByShellPid.has(cur)) return paneByShellPid.get(cur);
+    if (!parentByPid.has(cur)) break;
+    cur = parentByPid.get(cur);
+  }
+  return null;
+}
+
+// Build the full screen string. Pure: no I/O, time/width are injected.
+// selectedIndex marks the highlighted row (index into orderedSessions); -1 = none.
+function formatView({ sessions, err }, cols, nowMs, ts, selectedIndex = -1) {
+  const buckets = groupSessions(sessions);
+  let rowIdx = -1;
 
   const lines = [];
   const counts = GROUPS.map((g) => `${g.emoji}${buckets[g.key].length}`).join("  ");
@@ -160,6 +190,9 @@ function formatView({ sessions, err }, cols, nowMs, ts) {
       lines.push("");
       lines.push(`  ${B}${g.emoji} ${g.title}${R} ${DIM}(${rows.length})${R}`);
       for (const s of rows) {
+        rowIdx++;
+        const sel = rowIdx === selectedIndex;
+        const gutter = sel ? `${B}${CYN}❯${R} ` : "  "; // 2 cols either way
         const icon = `${g.color}${padEnd(g.ilabel, ICON_W)}${R}`;
         const proj = `${CYN}${padEnd(trunc(project(s), projW), projW)}${R}`;
         const name = s.name || String(s.sessionId || "").slice(0, 8);
@@ -179,7 +212,7 @@ function formatView({ sessions, err }, cols, nowMs, ts) {
         if (detailText && cols - used < detailText.length) {
           detailText = trunc(detailText, Math.max(3, cols - used));
         }
-        let row = `    ${icon}  ${proj} ${nameS} ${DIM}${age.padStart(4)}${R}`;
+        let row = `${gutter}  ${icon}  ${proj} ${nameS} ${DIM}${age.padStart(4)}${R}`;
         if (detailText) row += `  ${detailColor}${detailText}${R}`;
         lines.push(row);
       }
@@ -188,8 +221,8 @@ function formatView({ sessions, err }, cols, nowMs, ts) {
 
   lines.push("");
   lines.push(
-    `${DIM}└── ${RED}●${DIM} needs you  ${YEL}●${DIM} working  ${GRN}●${DIM} idle  ` +
-      `${DIM}●${DIM} done   ·  refresh ${INTERVAL}s · q / Ctrl-C to quit${R}`
+    `${DIM}└── ${B}j/k${R}${DIM} move · ${B}↵${R}${DIM} open in tmux · ${B}q${R}${DIM} quit` +
+      `   ·   ${RED}●${DIM} needs ${YEL}●${DIM} working ${GRN}●${DIM} idle ${DIM}● done${R}`
   );
   return lines.join("\n");
 }
@@ -199,6 +232,47 @@ async function render() {
   const cols = Math.max(60, process.stdout.columns || 100);
   const result = await fetch();
   return formatView(result, cols, Date.now(), clock());
+}
+
+// Map each tmux pane's shell pid -> pane id (e.g. 74720 -> "%14").
+function paneShellMap() {
+  const map = new Map();
+  try {
+    const out = execFileSync("tmux", ["list-panes", "-a", "-F", "#{pane_pid} #{pane_id}"], {
+      encoding: "utf8",
+    });
+    for (const line of out.trim().split("\n")) {
+      const [pid, id] = line.split(" ");
+      if (pid && id) map.set(Number(pid), id);
+    }
+  } catch {}
+  return map;
+}
+
+// Map pid -> ppid for every process (one ps call).
+function parentMap() {
+  const map = new Map();
+  try {
+    const out = execFileSync("ps", ["-ax", "-o", "pid=,ppid="], { encoding: "utf8" });
+    for (const line of out.trim().split("\n")) {
+      const m = line.trim().split(/\s+/);
+      if (m.length >= 2) map.set(Number(m[0]), Number(m[1]));
+    }
+  } catch {}
+  return map;
+}
+
+// Resolve the tmux pane id hosting a session, or null if it isn't in a pane.
+function resolvePaneTarget(session) {
+  if (!session || !session.pid) return null;
+  return findPaneForPid(session.pid, paneShellMap(), parentMap());
+}
+
+// Focus a pane and switch the current client to it.
+function jumpToPane(paneId) {
+  execFileSync("tmux", ["select-pane", "-t", paneId]);
+  execFileSync("tmux", ["select-window", "-t", paneId]);
+  execFileSync("tmux", ["switch-client", "-t", paneId]);
 }
 
 function draw(body) {
@@ -216,6 +290,10 @@ async function main() {
   let stopped = false;
   let timer = null;
 
+  // Interaction state. `data` is the last fetch; `selKey` keeps the cursor on
+  // the same session across refreshes; `ordered` is the last drawn row order.
+  const state = { data: { sessions: [], err: null }, selKey: null, ordered: [], flash: "" };
+
   function cleanup() {
     if (stopped) return;
     stopped = true;
@@ -232,12 +310,56 @@ async function main() {
     process.exit(0);
   }
 
+  // Paint from current state (no refetch). Resolves the selected index from
+  // selKey, clamping to the list, and keeps the order for the key handlers.
+  function repaint() {
+    const cols = Math.max(60, process.stdout.columns || 100);
+    const ordered = orderedSessions(state.data.sessions);
+    state.ordered = ordered;
+    let idx = ordered.findIndex((s) => sessionKey(s) === state.selKey);
+    if (idx < 0) idx = ordered.length ? 0 : -1;
+    state.selKey = idx >= 0 ? sessionKey(ordered[idx]) : null;
+    let body = formatView(state.data, cols, Date.now(), clock(), idx);
+    if (state.flash) body += `\n${RED}${state.flash}${R}`;
+    draw(body);
+    return idx;
+  }
+
+  function move(delta) {
+    const n = state.ordered.length;
+    if (!n) return;
+    let idx = state.ordered.findIndex((s) => sessionKey(s) === state.selKey);
+    if (idx < 0) idx = 0;
+    idx = Math.max(0, Math.min(n - 1, idx + delta));
+    state.selKey = sessionKey(state.ordered[idx]);
+    state.flash = "";
+    repaint();
+  }
+
+  function openSelected() {
+    const idx = state.ordered.findIndex((s) => sessionKey(s) === state.selKey);
+    const sess = idx >= 0 ? state.ordered[idx] : null;
+    if (!sess) return;
+    const pane = resolvePaneTarget(sess);
+    if (!pane) {
+      state.flash = "⚠ no tmux window found for this session (background or not in tmux)";
+      repaint();
+      return;
+    }
+    cleanup();
+    try { jumpToPane(pane); } catch {}
+    process.exit(0); // closes the popup; client lands on the target pane
+  }
+
   if (interactive) {
     process.stdin.setRawMode(true);
     process.stdin.resume();
     process.stdin.on("data", (buf) => {
       const ch = buf.toString();
-      if (ch === "q" || ch === "Q" || ch === "\x03") quit(); // q or Ctrl-C
+      if (ch === "q" || ch === "Q" || ch === "\x03") return quit(); // q / Ctrl-C
+      if (ch === "j" || ch === "\x1b[B") return move(1); // j / down arrow
+      if (ch === "k" || ch === "\x1b[A") return move(-1); // k / up arrow
+      if (ch === "\r" || ch === "\n") return openSelected(); // Enter
     });
   }
   process.on("SIGINT", quit);
@@ -245,16 +367,16 @@ async function main() {
 
   process.stdout.write("\x1b[?25l"); // hide cursor
 
-  // Redraw immediately when the pane resizes (e.g. when you attach the session).
+  // Redraw immediately when the pane resizes (e.g. on attach/popup open).
   if (process.stdout.isTTY) {
-    process.stdout.on("resize", () => {
-      if (!stopped) render().then(draw);
-    });
+    process.stdout.on("resize", () => { if (!stopped) repaint(); });
   }
 
+  // Refetch on an interval; key handlers repaint instantly from cached state.
   async function tick() {
     if (stopped) return;
-    draw(await render());
+    state.data = await fetch();
+    repaint();
     if (!stopped) timer = setTimeout(tick, INTERVAL * 1000);
   }
   await tick();
@@ -278,5 +400,8 @@ module.exports = {
   dwidth,
   padEnd,
   groupSessions,
+  orderedSessions,
+  sessionKey,
+  findPaneForPid,
   formatView,
 };

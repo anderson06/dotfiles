@@ -6,6 +6,9 @@ import {
   trunc,
   dwidth,
   groupSessions,
+  orderedSessions,
+  sessionKey,
+  findPaneForPid,
   formatView,
 } from "./claude-dash.js";
 
@@ -106,6 +109,70 @@ describe("groupSessions", () => {
     expect(b.busy).toHaveLength(1);
     expect(b.done).toHaveLength(1);
     expect(b.idle.map((s) => s.startedAt)).toEqual([300, 100]); // newest first
+  });
+});
+
+describe("orderedSessions", () => {
+  it("flattens groups in display order: waiting, working, idle, done", () => {
+    const sessions = [
+      { sessionId: "i", status: "idle", startedAt: 1 },
+      { sessionId: "d", state: "done", startedAt: 1 },
+      { sessionId: "w", status: "waiting", startedAt: 1 },
+      { sessionId: "b", status: "busy", startedAt: 1 },
+    ];
+    expect(orderedSessions(sessions).map((s) => s.sessionId)).toEqual(["w", "b", "i", "d"]);
+  });
+
+  it("matches the row order formatView highlights against", () => {
+    const sessions = [
+      { sessionId: "a", status: "idle", cwd: "/d/a", startedAt: 300 },
+      { sessionId: "b", status: "idle", cwd: "/d/b", startedAt: 100 },
+    ];
+    // newest-first within idle => a before b
+    expect(orderedSessions(sessions).map((s) => s.sessionId)).toEqual(["a", "b"]);
+  });
+});
+
+describe("sessionKey", () => {
+  it("prefers sessionId, then id, then pid", () => {
+    expect(sessionKey({ sessionId: "s", id: "i", pid: 1 })).toBe("s");
+    expect(sessionKey({ id: "i", pid: 1 })).toBe("i");
+    expect(sessionKey({ pid: 42 })).toBe("42");
+  });
+});
+
+describe("findPaneForPid", () => {
+  // session pid 500 -> shell 200 (a pane) two hops up
+  const panes = new Map([[200, "%7"], [999, "%1"]]);
+  const parents = new Map([[500, 400], [400, 200], [200, 1]]);
+
+  it("walks the parent chain to the hosting pane", () => {
+    expect(findPaneForPid(500, panes, parents)).toBe("%7");
+  });
+  it("matches when the pid is itself a pane shell", () => {
+    expect(findPaneForPid(200, panes, parents)).toBe("%7");
+  });
+  it("returns null when no ancestor is a pane", () => {
+    expect(findPaneForPid(500, new Map(), parents)).toBeNull();
+    expect(findPaneForPid(12345, panes, new Map())).toBeNull();
+  });
+});
+
+describe("formatView selection highlight", () => {
+  const now = 1_000_000_000_000;
+  const sessions = [
+    { sessionId: "w", status: "waiting", cwd: "/d/alpha", waitingFor: "x", startedAt: now },
+    { sessionId: "i", status: "idle", cwd: "/d/bravo", startedAt: now },
+  ];
+  it("draws a caret only on the selected row", () => {
+    const out = plain(formatView({ sessions, err: null }, 100, now, "12:00:00", 1));
+    const caretLines = out.split("\n").filter((l) => l.includes("❯"));
+    expect(caretLines).toHaveLength(1);
+    expect(caretLines[0]).toContain("bravo"); // index 1 = the idle session
+  });
+  it("draws no caret when nothing is selected", () => {
+    const out = plain(formatView({ sessions, err: null }, 100, now, "12:00:00", -1));
+    expect(out).not.toContain("❯");
   });
 });
 
