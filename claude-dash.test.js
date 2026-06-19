@@ -4,6 +4,7 @@ import {
   relAge,
   project,
   trunc,
+  cleanTitle,
   dwidth,
   groupSessions,
   orderedSessions,
@@ -77,6 +78,20 @@ describe("trunc", () => {
   });
   it("truncates with an ellipsis at width", () => {
     expect(trunc("abcdef", 4)).toBe("abc…");
+  });
+});
+
+describe("cleanTitle", () => {
+  it("strips Claude's leading status glyph and spinner", () => {
+    expect(cleanTitle("✳ Add CI tests and validation")).toBe("Add CI tests and validation");
+    expect(cleanTitle("⠐ Build cross-project dashboard")).toBe("Build cross-project dashboard");
+  });
+  it("leaves a plain title intact and trims it", () => {
+    expect(cleanTitle("  Find paid-search CSV  ")).toBe("Find paid-search CSV");
+  });
+  it("returns empty string for falsy input", () => {
+    expect(cleanTitle(null)).toBe("");
+    expect(cleanTitle(undefined)).toBe("");
   });
 });
 
@@ -230,6 +245,36 @@ describe("formatView (characterization of current layout)", () => {
     expect(out).toContain("failed");
   });
 
+  it("uses the pane title as the label when there is no name", () => {
+    const out = view({
+      sessions: [
+        { status: "idle", cwd: "/d/a", paneTitle: "Find paid-search CSV file URL", sessionId: "abc12345", startedAt: now },
+      ],
+      err: null,
+    });
+    expect(out).toContain("Find paid-search CSV file URL");
+    expect(out).not.toContain("abc12345");
+  });
+
+  it("falls back to the short id when neither name nor pane title exist", () => {
+    const out = view({
+      sessions: [{ status: "idle", cwd: "/d/a", sessionId: "abc12345-rest", startedAt: now }],
+      err: null,
+    });
+    expect(out).toContain("abc12345");
+  });
+
+  it("prefers an explicit name over the pane title", () => {
+    const out = view({
+      sessions: [
+        { status: "idle", cwd: "/d/a", name: "my-session", paneTitle: "some title", sessionId: "x", startedAt: now },
+      ],
+      err: null,
+    });
+    expect(out).toContain("my-session");
+    expect(out).not.toContain("some title");
+  });
+
   it("handles the empty case", () => {
     const out = view({ sessions: [], err: null });
     expect(out).toContain("(no Claude sessions detected)");
@@ -241,14 +286,18 @@ describe("formatView (characterization of current layout)", () => {
   });
 
   it("never emits a line wider than the terminal", () => {
+    const longTitle = "a very long pane title description that would overflow the row badly indeed";
     const sessions = Array.from({ length: 6 }, (_, i) => ({
-      status: "waiting",
+      status: i % 2 ? "waiting" : "idle", // mix detail and detail-free rows
       cwd: `/Users/me/dev/some-really-long-project-name-${i}`,
       waitingFor: "a very long waiting-for message that would overflow the row badly",
+      paneTitle: longTitle,
       startedAt: now - i * 86_400_000,
     }));
-    for (const line of plain(formatView({ sessions, err: null }, 80, now, "12:00:00")).split("\n")) {
-      expect(dwidth(line)).toBeLessThanOrEqual(80);
+    for (const width of [70, 80, 120]) {
+      for (const line of plain(formatView({ sessions, err: null }, width, now, "12:00:00")).split("\n")) {
+        expect(dwidth(line)).toBeLessThanOrEqual(width);
+      }
     }
   });
 });

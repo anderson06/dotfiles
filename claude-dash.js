@@ -72,6 +72,14 @@ function trunc(text, width) {
   return text.slice(0, Math.max(0, width - 1)) + "…";
 }
 
+// A tmux pane running Claude prefixes its title with a status glyph/spinner
+// (e.g. "✳ " or "⠐ "). Strip leading non-letter/number symbols so the title
+// reads as a plain description.
+function cleanTitle(t) {
+  if (!t) return "";
+  return String(t).replace(/^[^\p{L}\p{N}"'(\[]+/u, "").trim();
+}
+
 // Visible display width: strips ANSI and counts double-width glyphs (the group
 // emoji, CJK) as 2 so the box border lines up instead of overrunning/wrapping.
 function dwidth(str) {
@@ -195,9 +203,16 @@ function formatView({ sessions, err }, cols, nowMs, ts, selectedIndex = -1) {
         const gutter = sel ? `${B}${CYN}❯${R} ` : "  "; // 2 cols either way
         const icon = `${g.color}${padEnd(g.ilabel, ICON_W)}${R}`;
         const proj = `${CYN}${padEnd(trunc(project(s), projW), projW)}${R}`;
-        const name = s.name || String(s.sessionId || "").slice(0, 8);
+        // Label: explicit name, else the tmux pane title, else the short id.
+        const name = s.name || s.paneTitle || String(s.sessionId || "").slice(0, 8);
         const age = relAge(s.startedAt, nowMs);
-        const nameBudget = Math.max(10, Math.floor((cols - (ICON_W + 3) - (projW + 1) - 8) / 2));
+        // Waiting/done rows reserve room for their detail column; others give
+        // the whole remaining width to the (often long) description.
+        const hasDetail = g.key === "waiting" || g.key === "done";
+        const fixed = ICON_W + projW + 12;
+        const nameBudget = hasDetail
+          ? Math.max(10, Math.floor((cols - fixed) / 2))
+          : Math.max(10, cols - fixed);
         const nameS = trunc(name, nameBudget);
         let detailText = "", detailColor = "";
         if (g.key === "waiting") {
@@ -220,33 +235,63 @@ function formatView({ sessions, err }, cols, nowMs, ts, selectedIndex = -1) {
   }
 
   lines.push("");
-  lines.push(
-    `${DIM}└── ${B}j/k${R}${DIM} move · ${B}↵${R}${DIM} open in tmux · ${B}q${R}${DIM} quit` +
-      `   ·   ${RED}●${DIM} needs ${YEL}●${DIM} working ${GRN}●${DIM} idle ${DIM}● done${R}`
-  );
+  const keys = `${DIM}└── ${B}j/k${R}${DIM} move · ${B}↵${R}${DIM} open in tmux · ${B}q${R}${DIM} quit`;
+  const colorKey = `   ·   ${RED}●${DIM} needs ${YEL}●${DIM} working ${GRN}●${DIM} idle ${DIM}● done`;
+  // Append the color key only if the whole legend still fits the width.
+  lines.push((dwidth(keys + colorKey) <= cols ? keys + colorKey : keys) + R);
   return lines.join("\n");
 }
 
-// Live wrapper: fetch data + inject real terminal width and clock.
-async function render() {
-  const cols = Math.max(60, process.stdout.columns || 100);
+// Fetch sessions and annotate them with tmux pane info (title for the label,
+// pane id for the jump).
+async function liveData() {
   const result = await fetch();
-  return formatView(result, cols, Date.now(), clock());
+  if (!result.err) enrichSessions(result.sessions);
+  return result;
 }
 
-// Map each tmux pane's shell pid -> pane id (e.g. 74720 -> "%14").
-function paneShellMap() {
-  const map = new Map();
+// Live wrapper: fetch+enrich data + inject real terminal width and clock.
+async function render() {
+  const cols = Math.max(60, process.stdout.columns || 100);
+  return formatView(await liveData(), cols, Date.now(), clock());
+}
+
+// One tmux call -> { shellToPane: pane shell pid -> pane id,
+//                     titleByPane: pane id -> pane title }.
+function paneInfo() {
+  const shellToPane = new Map();
+  const titleByPane = new Map();
   try {
-    const out = execFileSync("tmux", ["list-panes", "-a", "-F", "#{pane_pid} #{pane_id}"], {
-      encoding: "utf8",
-    });
-    for (const line of out.trim().split("\n")) {
-      const [pid, id] = line.split(" ");
-      if (pid && id) map.set(Number(pid), id);
+    const out = execFileSync(
+      "tmux",
+      ["list-panes", "-a", "-F", "#{pane_pid}\t#{pane_id}\t#{pane_title}"],
+      { encoding: "utf8" }
+    );
+    for (const line of out.split("\n")) {
+      if (!line) continue;
+      const [pid, id, ...rest] = line.split("\t");
+      if (pid && id) {
+        shellToPane.set(Number(pid), id);
+        titleByPane.set(id, rest.join("\t"));
+      }
     }
   } catch {}
-  return map;
+  return { shellToPane, titleByPane };
+}
+
+// Annotate each session with its hosting tmux pane id and a cleaned pane title
+// (used as the row description when the session has no explicit name).
+function enrichSessions(sessions) {
+  const { shellToPane, titleByPane } = paneInfo();
+  const parents = parentMap();
+  for (const s of sessions) {
+    const pane = s.pid ? findPaneForPid(s.pid, shellToPane, parents) : null;
+    if (!pane) continue;
+    s.paneId = pane;
+    const t = cleanTitle(titleByPane.get(pane));
+    if (t && t !== "claude.exe") s.paneTitle = t;
+  }
+  return sessions;
 }
 
 // Map pid -> ppid for every process (one ps call).
@@ -265,7 +310,7 @@ function parentMap() {
 // Resolve the tmux pane id hosting a session, or null if it isn't in a pane.
 function resolvePaneTarget(session) {
   if (!session || !session.pid) return null;
-  return findPaneForPid(session.pid, paneShellMap(), parentMap());
+  return findPaneForPid(session.pid, paneInfo().shellToPane, parentMap());
 }
 
 // Focus a pane and switch the current client to it.
@@ -340,7 +385,7 @@ async function main() {
     const idx = state.ordered.findIndex((s) => sessionKey(s) === state.selKey);
     const sess = idx >= 0 ? state.ordered[idx] : null;
     if (!sess) return;
-    const pane = resolvePaneTarget(sess);
+    const pane = sess.paneId || resolvePaneTarget(sess);
     if (!pane) {
       state.flash = "⚠ no tmux window found for this session (background or not in tmux)";
       repaint();
@@ -375,7 +420,7 @@ async function main() {
   // Refetch on an interval; key handlers repaint instantly from cached state.
   async function tick() {
     if (stopped) return;
-    state.data = await fetch();
+    state.data = await liveData();
     repaint();
     if (!stopped) timer = setTimeout(tick, INTERVAL * 1000);
   }
@@ -397,6 +442,7 @@ module.exports = {
   relAge,
   project,
   trunc,
+  cleanTitle,
   dwidth,
   padEnd,
   groupSessions,
