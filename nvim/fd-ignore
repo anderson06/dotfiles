@@ -1,0 +1,11 @@
+node_modules/
+dist/
+build/
+coverage/
+out/
+.next/
+.nuxt/
+.turbo/
+.cache/
+.git/
+.tmp/

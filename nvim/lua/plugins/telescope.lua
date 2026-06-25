@@ -18,6 +18,11 @@ return {
     local trouble = require("trouble.providers.telescope")
     local custom_pickers = require("core.telescope-custom-pickers")
 
+    -- Reveal gitignored files like .env.local (--no-ignore-vcs) while still
+    -- skipping heavy dirs (node_modules, .tmp, dist, ...) via this ignore file,
+    -- so the walk stays fast in repos with large gitignored scratch dirs.
+    local fd_ignore = vim.fn.stdpath("config") .. "/fd-ignore"
+
     telescope.setup({
       defaults = {
         mappings = {
@@ -31,6 +36,19 @@ return {
         wrap_results = false,
       },
       pickers = {
+        find_files = {
+          find_command = {
+            "fd",
+            "--type",
+            "f",
+            "--hidden",
+            "--no-ignore-vcs",
+            "--color",
+            "never",
+            "--ignore-file",
+            fd_ignore,
+          },
+        },
         live_grep = {
           mappings = {
             i = {
