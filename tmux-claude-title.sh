@@ -7,17 +7,16 @@
 # That leading glyph is the reliable "this is a Claude pane" signal: strip it to
 # get the title; if it is absent the pane is not Claude and we leave it alone.
 # Cap the displayed name so long titles do not overflow the tmux status bar.
-MAX_TITLE_CHARS=40
+#
+# Also usable as a standalone truncator so other callers (e.g. the new-window
+# skill) share one cap + word-boundary algorithm:
+#   tmux-claude-title --truncate "Some Long Window Title"   -> capped title on stdout
+MAX_TITLE_CHARS=24
 
-pane="${TMUX_PANE:-}"
-title=$(tmux display-message ${pane:+-t "$pane"} -p '#{pane_title}')
-
-# perl prints only when a leading Claude glyph was present -> empty output means
-# "not a Claude pane", so we skip the rename instead of blanking the window name.
-# Titles over MAX_TITLE_CHARS are truncated at a word boundary with a trailing
-# ellipsis; length is measured in characters (perl -CSDA), not bytes.
-clean=$(printf '%s' "$title" | MAX_TITLE_CHARS="$MAX_TITLE_CHARS" perl -CSDA -ne '
-  if (s/^\s*[\x{2733}\x{2800}-\x{28FF}]+\s*//) {
+# Cap stdin to MAX_TITLE_CHARS characters (not bytes; perl -CSDA), truncating at
+# a word boundary with a trailing ellipsis. Trailing whitespace is trimmed.
+truncate_title() {
+  MAX_TITLE_CHARS="$MAX_TITLE_CHARS" perl -CSDA -ne '
     s/\s+$//;
     my $lim = $ENV{MAX_TITLE_CHARS};
     if (length > $lim) {
@@ -27,10 +26,28 @@ clean=$(printf '%s' "$title" | MAX_TITLE_CHARS="$MAX_TITLE_CHARS" perl -CSDA -ne
       $_ = $t . "\x{2026}";
     }
     print;
+  '
+}
+
+if [ "$1" = "--truncate" ]; then
+  printf '%s' "$2" | truncate_title
+  exit 0
+fi
+
+pane="${TMUX_PANE:-}"
+title=$(tmux display-message ${pane:+-t "$pane"} -p '#{pane_title}')
+
+# perl prints only when a leading Claude glyph was present -> empty output means
+# "not a Claude pane", so we skip the rename instead of blanking the window name.
+clean=$(printf '%s' "$title" | perl -CSDA -ne '
+  if (s/^\s*[\x{2733}\x{2800}-\x{28FF}]+\s*//) {
+    s/\s+$//;
+    print;
   }
 ')
 
 if [ -n "$clean" ]; then
+  clean=$(printf '%s' "$clean" | truncate_title)
   tmux rename-window ${pane:+-t "$pane"} -- "$clean"
   tmux set-window-option ${pane:+-t "$pane"} automatic-rename off
 else
