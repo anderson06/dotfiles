@@ -434,13 +434,58 @@ async function main() {
   await tick();
 }
 
+// --emit-tmux: stamp every tmux window with the status of the Claude session it
+// hosts into a per-window @claude_status option (waiting|busy|idle|done, or unset
+// when the window hosts no Claude). The window-status glyph reads this option; see
+// tmux.conf and tmux-claude-glyph.sh. Prints nothing — it is invoked from a
+// zero-width status-right #() so it re-runs on each status redraw. When a window
+// hosts several sessions the most attention-worthy status wins.
+const STATUS_RANK = { waiting: 4, idle: 3, busy: 2, done: 1 };
+async function emitTmux() {
+  const { sessions, err } = await fetch();
+  if (err) return; // transient failure: leave existing options untouched
+  enrichSessions(sessions); // annotates each session with .paneId
+  const paneToWin = new Map();
+  const allWins = new Set();
+  try {
+    const out = execFileSync("tmux", ["list-panes", "-a", "-F", "#{pane_id}\t#{window_id}"], { encoding: "utf8" });
+    for (const line of out.split("\n")) {
+      if (!line) continue;
+      const [pane, win] = line.split("\t");
+      if (pane && win) { paneToWin.set(pane, win); allWins.add(win); }
+    }
+  } catch { return; }
+  const winStatus = new Map();
+  for (const s of sessions) {
+    const win = s.paneId ? paneToWin.get(s.paneId) : null;
+    if (!win) continue;
+    const key = classify(s);
+    const cur = winStatus.get(win);
+    if (!cur || STATUS_RANK[key] > STATUS_RANK[cur]) winStatus.set(win, key);
+  }
+  for (const win of allWins) {
+    const want = winStatus.get(win) || "";
+    let have = "";
+    try { have = execFileSync("tmux", ["show-options", "-wqv", "-t", win, "@claude_status"], { encoding: "utf8" }).trim(); } catch {}
+    if (want === have) continue; // avoid needless set-option churn / redraw loops
+    try {
+      if (want) execFileSync("tmux", ["set-option", "-w", "-t", win, "@claude_status", want]);
+      else execFileSync("tmux", ["set-option", "-u", "-w", "-t", win, "@claude_status"]);
+    } catch {}
+  }
+}
+
 // Run the TUI only when executed directly; stay quiet when imported (tests).
 if (require.main === module) {
-  main().catch((e) => {
-    process.stdout.write("\x1b[?25h");
-    console.error(e && e.stack ? e.stack : String(e));
-    process.exit(1);
-  });
+  if (process.argv.includes("--emit-tmux")) {
+    emitTmux().catch(() => {}).finally(() => process.exit(0));
+  } else {
+    main().catch((e) => {
+      process.stdout.write("\x1b[?25h");
+      console.error(e && e.stack ? e.stack : String(e));
+      process.exit(1);
+    });
+  }
 }
 
 module.exports = {
